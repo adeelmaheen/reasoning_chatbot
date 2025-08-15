@@ -1,6 +1,10 @@
 import streamlit as st
 import asyncio
 from agents import Agent, Runner, ModelSettings
+from dotenv import load_dotenv
+import os
+load_dotenv()  # Load environment variables from .env file
+
 
 # Page layout
 st.set_page_config(page_title="GPT-5 Chat Helper", layout="wide")
@@ -32,6 +36,11 @@ if prompt := st.chat_input("Type your question here..."):
     # Record user message
     st.session_state.messages.append({"role": "user", "content": prompt})
     st.chat_message("user").markdown(prompt)
+
+    api_key = os.getenv("OPENAI_API_KEY")  # Ensure the OpenAI API key is set
+    if not api_key:
+        st.error("Please set your OpenAI API key in the .env file.")
+    
 
     # Prepare agent with reasoning
     model_settings = ModelSettings(reasoning={"effort": effort})
